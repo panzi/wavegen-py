@@ -52,18 +52,18 @@ def fadeout(t,duration):
 
 def wavegen(stream,sample_rate,bits_per_sample,samples,wavefuncts,write_header=True):
 	if sample_rate <= 0:
-		raise ValueError, "illegal sample rate"
+		raise ValueError("illegal sample rate")
 
 	if bits_per_sample <= 0:
-		raise ValueError, "illegal number of bits per sample"
+		raise ValueError("illegal number of bits per sample")
 
 	if samples < 0:
-		raise ValueError, "illegal number of samples"
+		raise ValueError("illegal number of samples")
 
 	channels = len(wavefuncts)
 
 	if channels <= 0:
-		raise ValueError, "illegal number of channels"
+		raise ValueError("illegal number of channels")
 
 	defs = dict((key,val) for key, val in math.__dict__.items() if not key.startswith('_'))
 	defs['tau'] = tau
@@ -89,11 +89,11 @@ def wavegen(stream,sample_rate,bits_per_sample,samples,wavefuncts,write_header=T
 	max_volume = ~(~0 << (bits_per_sample - 1))
 
 	if write_header:
-		stream.write(pack('<4cI4c4cIHHIIHH4cI',
-			'R','I','F','F',riff_size,'W','A','V','E',
-			'f','m','t',' ',fmt_size,audio_format,channels,sample_rate,
+		stream.write(pack('<4BI4B4BIHHIIHH4BI',
+			ord('R'),ord('I'),ord('F'),ord('F'),riff_size,ord('W'),ord('A'),ord('V'),ord('E'),
+			ord('f'),ord('m'),ord('t'),ord(' '),fmt_size,audio_format,channels,sample_rate,
 			byte_rate,block_align,bits_per_sample,
-			'd','a','t','a',data_size))
+			ord('d'),ord('a'),ord('t'),ord('a'),data_size))
 
 	for sample in xrange(samples):
 		t = sample / sample_rate
