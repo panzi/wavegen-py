@@ -95,14 +95,15 @@ def wavegen(stream,sample_rate,bits_per_sample,samples,wavefuncts,write_header=T
 			byte_rate,block_align,bits_per_sample,
 			ord('d'),ord('a'),ord('t'),ord('a'),data_size))
 
+	sample_fmt = 'B' * bytes_per_sample
 	for sample in xrange(samples):
 		t = sample / sample_rate
 		for wavefunct in wavefuncts:
 			vol = int(max_volume * wavefunct(t)) << shift
 			if bits_per_sample <= 8:
 				vol += mid
-			for byte in xrange(bytes_per_sample):
-				stream.write(pack('B', (vol >> (byte * 8)) & 0xFF))
+			stream.write(pack(sample_fmt, *[(vol >> (byte * 8)) & 0xFF
+				for byte in xrange(bytes_per_sample)]))
 
 def main(args):
 	filename = args[0]
